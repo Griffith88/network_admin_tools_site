@@ -1,0 +1,17 @@
+{% extends 'app_users/base.html' %}
+{% block content %}
+	<main class="flex-shrink-0">
+  <div class="container">
+    <h1 class="mt-5">Прощайте</h1>
+    <p class="lead">Вы успешно вышли из системы</p>
+		<p>Если это не произошло нажмите <a href="{% url 'programmers:search-pc' %}">Вернуться</a></p>
+		<p>Вы будете перенаправлены на гланую страницу через 5 секунд...</p>
+  </div>
+</main>
+	<script type="text/javascript">
+      function Redirect() {
+          window.location = "{% url 'programmers:search-pc' %}";
+      }
+      setTimeout('Redirect()', 5000);
+	</script>
+{% endblock %}

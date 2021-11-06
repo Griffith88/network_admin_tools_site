@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+	<div class="container search-pc__container">
+		<h1 class="h1">Поиск информации о ПК</h1>
+		<form action="" method="get" class="form-search">
+			<input type="text" name="pc_name" class="form-control search-input" placeholder="Введите имя ПК">
+			<button class="btn-reset btn-search" type="submit">Найти</button>
+		</form>
+		{% if search %}
+			{% if login and ip and name %}
+				<div class="description">
+					По запросу {{ pc_name }} найдено:
+				</div>
+				<div class="answer">
+					<ul class="answer-list">
+						<li class="answer-item">Логин пользователя: {{ login }}</li>
+						<li class="answer-item">IP: {{ ip }}</li>
+						<li class="answer-item">ФИО: {{ name }}</li>
+					</ul>
+				</div>
+			{% else %}
+				<div class="description">
+					По запросу {{ pc_name }} ничего не найдено. Возможно компьютер неактивный или нету информации в Active
+					Directory
+				</div>
+			{% endif %}
+		{% endif %}
+	</div>
+{% endblock %}

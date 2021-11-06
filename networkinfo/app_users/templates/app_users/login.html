@@ -1,0 +1,28 @@
+{% extends 'app_users/base.html' %}
+{% load static %}
+{% block content %}
+	<div class="container login-container">
+		<form class="mb-4 form-sign-in" action="{% url "app_users:login" %}" method="post">
+			{% csrf_token %}
+			<img class="mb-4" src="{% static 'app_users/images/logo_sm.png' %}" alt="">
+			<div class="form-floating">
+				<input type="text" class="form-control" id="floatingInput" placeholder="логин" name="username">
+				<label for="floatingInput">Логин</label>
+			</div>
+			<div class="errors-list">
+				{{ form.password.errors }}
+			</div>
+			<div class="form-floating">
+				<input type="password" class="form-control" id="floatingPassword" placeholder="пароль" name="password">
+				<label for="floatingPassword">Пароль</label>
+			</div>
+			{% if messages %}
+				{% for message in messages %}
+					<p style="color: red">{{ message }}</p>
+				{% endfor %}
+			{% endif %}
+			<button class="w-100 btn btn-lg btn-primary" type="submit">Войти</button>
+			<p class="mt-5 mb-3 text-muted">&copy; 2021 - ...</p>
+		</form>
+	</div>
+{% endblock %}
