@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="db" uuid="2841e403-6d35-4cdc-b041-32c7437fb942">
+    <data-source source="LOCAL" name="KAV" read-only="true" uuid="643f1c7f-f955-4159-9ac1-a062d80e31c8">
+      <driver-ref>sqlserver.jtds</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>net.sourceforge.jtds.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:jtds:sqlserver://192.168.100.30:1433/KAV;instance=MSSQL</jdbc-url>
+      <jdbc-additional-properties>
+        <property name="DOMAIN" value="av" />
+      </jdbc-additional-properties>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="db" uuid="3bde0c6d-45b7-4034-a6e4-55719033e9b5">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:D:\NetworkInfoProject\networkinfo\db.sqlite3</jdbc-url>
+      <jdbc-url>jdbc:sqlite:D:\GitHub\network_admin_tools_site\networkinfo\db.sqlite3</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
       <libraries>
         <library>

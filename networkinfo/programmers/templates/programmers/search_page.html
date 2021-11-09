@@ -7,7 +7,7 @@
 			<button class="btn-reset btn-search" type="submit">Найти</button>
 		</form>
 		{% if search %}
-			{% if login and ip and name %}
+			{% if login and ip and cn %}
 				<div class="description">
 					По запросу {{ pc_name }} найдено:
 				</div>
@@ -15,13 +15,59 @@
 					<ul class="answer-list">
 						<li class="answer-item">Логин пользователя: {{ login }}</li>
 						<li class="answer-item">IP: {{ ip }}</li>
-						<li class="answer-item">ФИО: {{ name }}</li>
+						<li class="answer-item">ФИО: {{ cn }}</li>
+						<li class="answer-item">Департамент: {{ department }}</li>
 					</ul>
 				</div>
+				<h3>Техническая информация</h3>
+				<h5>Материнская плата</h5>
+				<ul class="answer-list">
+					<li class="answer-item">Наименование: {{ manufacturer }}</li>
+					<li class="answer-item">Модель: {{ motherboard_name }}</li>
+					<li class="answer-item">Биос: {{ bios_manufacturer }}</li>
+					<li class="answer-item">Версия биос: {{ bios_version }}</li>
+				</ul>
+				<h5>Процессор</h5>
+				<ul class="answer-list">
+					<li class="answer-item">Наименование: {{ cpu }}</li>
+					<li class="answer-item">Скорость: {{ cpu_speed }}</li>
+					<li class="answer-item">Ядра: {{ cpu_cores }}</li>
+					<li class="answer-item">Потоки: {{ cpu_threads }}</li>
+				</ul>
+				<h5>Оперативная память</h5>
+				<p>Общий объем: {{ ram_full_capacity }}</p>
+				{% for plank in ram_list %}
+					<ul class="answer-list">
+						<li class="answer-item">Наименование: {{ plank.ram }}</li>
+						<li class="answer-item">Объем: {{ plank.ram_capacity }}</li>
+						<li class="answer-item">Скорость: {{ plank.ram_speed }}</li>
+					</ul>
+				{% endfor %}
+				<h5>Жесткие диски</h5>
+				{% for disk in hd_list %}
+					<ul class="answer-list">
+						<li class="answer-item">Наименование: {{ disk.hd }}</li>
+						<li class="answer-item">Объем: {{ disk.hd_capacity }}</li>
+					</ul>
+				{% endfor %}
+				<h5>Видеокарты</h5>
+				{% for card in video_list %}
+					<ul class="answer-list">
+						<li class="answer-item">Наименование: {{ card.video }}</li>
+						<li class="answer-item">Драйвер: {{ card.video_driver }}</li>
+					</ul>
+				{% endfor %}
+				<h5>Сетевые карты</h5>
+				{% for card in network_list %}
+					<ul class="answer-list">
+						<li class="answer-item">Наименование: {{ card.network }}</li>
+						<li class="answer-item">MAC-адрес: {{ card.network_mac }}</li>
+						<li class="answer-item">Скорость: {{ card.network_speed }}</li>
+					</ul>
+				{% endfor %}
 			{% else %}
 				<div class="description">
-					По запросу {{ pc_name }} ничего не найдено. Возможно компьютер неактивный или нету информации в Active
-					Directory
+					По запросу {{ pc_name }} ничего не найдено. Возможно компьютер неактивный или нету информации в базе.
 				</div>
 			{% endif %}
 		{% endif %}
