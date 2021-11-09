@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-van^z@v5-cg&!ik&_7wu(5&^c6^q)_0z-6a*@tyfhab6_78-u)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -78,6 +78,16 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     },
+    "kav": {
+        "ENGINE": "mssql",
+        "NAME": "KAV",
+        "USER": "",
+        "PASSWORD": "",
+        "HOST": "",
+        "PORT": "",
+        "OPTIONS": {"driver": "ODBC Driver 17 for SQL Server"
+                    },
+    }
 }
 
 # Password validation
