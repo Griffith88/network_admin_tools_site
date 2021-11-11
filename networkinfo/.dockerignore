@@ -1,0 +1,5 @@
+#ignore
+/static/
+/static_root/
+/nginx/
+/probe.py

@@ -2,9 +2,7 @@ version: "3.7"
 
 services:
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: vdobrokhotov/web-adminsite:v1.0
     volumes:
       - .:/usr/src/adminsite
     entrypoint: ./entrypoint.sh
@@ -21,9 +19,7 @@ services:
       - POSTGRES_PASSWORD=dctlkzdthatq
 
   nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
+    image: vdobrokhotov/nginx-adminsite:v1.0
     volumes:
       - ./static_root:/usr/src/adminsite/static
     ports:
