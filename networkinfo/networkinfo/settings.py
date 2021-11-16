@@ -101,6 +101,16 @@ DATABASES = {
         "PORT": "",
         "OPTIONS": {"driver": "ODBC Driver 17 for SQL Server"
                     },
+    },
+    "spsql": {
+        "ENGINE": "mssql",
+        "NAME": env('SPSQL_DATABASE'),
+        "USER": env('SPSQL_UID'),
+        "PASSWORD": env('SPSQL_PASSWORD'),
+        "HOST": env('SPSQL_SERVER'),
+        "PORT": "",
+        "OPTIONS": {"driver": "ODBC Driver 17 for SQL Server"
+                    },
     }
 }
 
@@ -176,12 +186,6 @@ skud_config = {
     'get_warnings': True,
 }
 
-# SPSQL READ
-
-SPSQL_SERVER = env('SPSQL_SERVER')
-SPSQL_DATABASE = env('SPSQL_DATABASE')
-SPSQL_UID = env('SPSQL_UID')
-SPSQL_PASSWORD = env('SPSQL_PASSWORD')
 
 # ADMIN LDAP
 

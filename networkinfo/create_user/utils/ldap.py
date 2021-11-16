@@ -1,7 +1,6 @@
-from ldap3 import Server, Connection as LDAP, MODIFY_REPLACE, NTLM
-from pyodbc import connect
-from networkinfo.settings import SPSQL_SERVER, SPSQL_DATABASE, SPSQL_PASSWORD, SPSQL_UID, AD_SERVER, AD_PASSWORD, \
-    AD_USER
+from ldap3 import Server, Connection as LDAP, MODIFY_REPLACE
+from django.db import connections
+from networkinfo.settings import AD_SERVER, AD_PASSWORD, AD_USER
 from create_user.utils.add_card_number import add_card_number
 from create_user.utils.add_mail_to_mailrelay import add_mail_to_relay
 
@@ -14,11 +13,7 @@ class LdapUser:
 
     @classmethod
     def from_sql(cls, personal_number: int):
-        with connect('DRIVER={ODBC Driver 17 for SQL Server};'
-                     f'SERVER={SPSQL_SERVER};'
-                     f'DATABASE={SPSQL_DATABASE};'
-                     f'UID={SPSQL_UID};'
-                     f'PWD={SPSQL_PASSWORD}').cursor() as cursor:
+        with connections['spsql'].cursor() as cursor:
             cursor.execute(
                 f'SELECT [DEPARTMENT],[FNAME],[NAME1],[NAME2],[FULL_NAME],[ISN_P] '
                 f'FROM [MDS].[dbo].[V_Employers_AD] '
