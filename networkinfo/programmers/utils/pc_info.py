@@ -25,10 +25,13 @@ class Computer(ABC):
 
 
 class LdapComputer(Computer):
-    conn = Connection(server=LDAP_SERVER,
-                      user=f'{settings.LDAP_USERNAME}',
-                      password=settings.LDAP_PASSWORD,
-                      return_empty_attributes=True,)
+
+    def __init__(self, name):
+        super().__init__(name)
+        self.conn = Connection(server=LDAP_SERVER,
+                               user=f'{settings.LDAP_USERNAME}',
+                               password=settings.LDAP_PASSWORD,
+                               return_empty_attributes=True, )
 
     def get_info(self):
         with self.conn as conn:
@@ -190,8 +193,11 @@ class KasperComputer(Computer):
         return network_list
 
     def get_os_info(self):
-        conn = LdapComputer.conn
-        with conn:
+
+        with Connection(server=LDAP_SERVER,
+                        user=f'{settings.LDAP_USERNAME}',
+                        password=settings.LDAP_PASSWORD,
+                        return_empty_attributes=True, ) as conn:
             conn.search(
                 search_base="ou=Corp_Computers,dc=ashipyards,dc=com",
                 search_filter=f'(&(objectClass=computer)(name={self.name}))',
