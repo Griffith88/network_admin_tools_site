@@ -20,7 +20,7 @@ class UserLoginView(View):
         user = back.authenticate(request=request, username=username, password=password, authentication=NTLM, )
         if user is not None:
             login(request, user, backend='app_users.backends.LDAPBackend')
-            return HttpResponseRedirect(reverse_lazy('programmers:search-pc'))
+            return HttpResponseRedirect(reverse_lazy('main_page:main'))
         else:
             messages.error(request, 'Неправильное имя пользователя или пароль')
             return render(request, template_name='app_users/login.html', context={})

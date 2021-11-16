@@ -15,7 +15,7 @@
 		<header class="header">
 			<div class="container header-container">
 				<nav class="header-nav">
-					<a class="nav-logo" href="">
+					<a class="nav-logo" href="{% url 'main_page:main' %}">
 						<img class="nav-logo__img" src="{% static 'images/logos/logo100.png' %}" alt="Логотип Адмиралтейские Верфи">
 					</a>
 					{% if request.user.is_authenticated %}

@@ -17,4 +17,6 @@ RUN pip install -r /usr/src/adminsite/requirements.txt
 
 COPY . /usr/src/adminsite/
 
-ENTRYPOINT ["/usr/src/adminsite/entrypoint.sh"]
+RUN ["chmod", "+x", "/usr/src/adminsite/entrypoint.sh"]
+
+ENTRYPOINT ["sh", "/usr/src/adminsite/entrypoint.sh"]

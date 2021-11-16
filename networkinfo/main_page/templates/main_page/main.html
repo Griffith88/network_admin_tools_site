@@ -1,0 +1,26 @@
+{% extends 'programmers/base.html' %}
+
+{% block content %}
+	<div class="container">
+		<div class="row row-cols-1 row-cols-lg-2 align-items-stretch g-4 py-5">
+			{% if perms.create_user.view_usercreatemodel %}
+				<div class="col">
+					<a href="{% url 'create_user:create-user' %}"
+						 class="main_menu card card-cover h-100 overflow-hidden text-white rounded-5">
+						<div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+							<h2 class="mt-5 mb-4 display-6 lh-1 fw-bold card-heading">Создание пользователя</h2>
+						</div>
+					</a>
+				</div>
+			{% endif %}
+			<div class="col">
+				<a href="{% url 'programmers:search-pc' %}"
+					 class="main_menu card card-cover h-100 overflow-hidden text-white rounded-5">
+					<div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+						<h2 class="mt-5 mb-4 display-6 lh-1 fw-bold card-heading">Информация по ПК</h2>
+					</div>
+				</a>
+			</div>
+		</div>
+	</div>
+{% endblock %}

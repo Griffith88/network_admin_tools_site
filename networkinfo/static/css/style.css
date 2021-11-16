@@ -7,6 +7,11 @@
     border: unset;
 }
 
+.link-reset {
+    text-decoration: none;
+    color: inherit;
+}
+
 .header {
     background: linear-gradient(to right, white, #0072c6);
 }
@@ -21,6 +26,7 @@
 .nav-logo {
     margin-right: auto;
 }
+
 .nav-logo__img {
     width: 80px;
     height: 80px;
@@ -49,10 +55,12 @@
 }
 
 .btn-search:hover {
+    color: white;
     background-color: #0b5ed7;
 }
 
 .btn-search:active {
+    color: white;
     background-color: #0d6efd;
 }
 
@@ -67,6 +75,49 @@
 .header-btn:hover {
     background-color: rgb(220, 220, 220);
 }
+
 .header-btn:active {
     background-color: grey;
+}
+
+.create_form {
+    max-width: 400px;
+}
+
+.form-check-label {
+    display: block;
+    margin-bottom: 15px;
+}
+
+.login_input {
+    margin-bottom: 10px;
+}
+
+.messages {
+    padding: 0;
+    list-style: none;
+}
+
+.messages > * {
+    color: red;
+}
+
+.create_container {
+    padding-top: 30px;
+}
+
+.main_menu {
+    border-color: #0072c6;
+    border-radius: 25px;
+    background: linear-gradient(to left, white, #0072c6);
+    opacity: 1;
+    transition: opacity .3s ease-in-out;
+}
+
+.main_menu:hover, .main_menu:active {
+    opacity: 0.7;
+}
+
+.card-heading {
+    padding: 0;
 }

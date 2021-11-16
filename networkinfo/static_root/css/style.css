@@ -7,6 +7,11 @@
     border: unset;
 }
 
+.link-reset {
+    text-decoration: none;
+    color: inherit;
+}
+
 .header {
     background: linear-gradient(to right, white, #0072c6);
 }
@@ -21,6 +26,7 @@
 .nav-logo {
     margin-right: auto;
 }
+
 .nav-logo__img {
     width: 80px;
     height: 80px;
@@ -67,6 +73,42 @@
 .header-btn:hover {
     background-color: rgb(220, 220, 220);
 }
+
 .header-btn:active {
     background-color: grey;
+}
+
+.create_form {
+    max-width: 400px;
+}
+
+.form-check-label {
+    display: block;
+    margin-bottom: 15px;
+}
+
+.login_input {
+    margin-bottom: 10px;
+}
+
+.messages {
+    padding: 0;
+    list-style: none;
+}
+
+.messages > * {
+    color: red;
+}
+
+.create_container {
+    padding-top: 30px;
+}
+
+.main_menu {
+    border-color: #0072c6;
+    background: linear-gradient(to left, white, #0072c6);
+}
+
+.card-heading {
+    padding: 0;
 }

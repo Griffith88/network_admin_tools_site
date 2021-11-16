@@ -1,0 +1,59 @@
+{% extends 'programmers/base.html' %}
+{% block content %}
+	<div class="container create_container">
+		{% if not success %}
+			<h1>Создание пользователя</h1>
+			{% if not full_name %}
+				{% if messages %}
+					<ul class="messages">
+						{% for message in messages %}
+							<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+				<form action="" method="get" class="mb-3 create_form">
+					<input style="margin-bottom: 15px" type="number" name="personal_number" class="form-control"
+								 placeholder="Табельный номер" required>
+					<button type="submit" class="btn-reset btn-search">Найти</button>
+				</form>
+			{% else %}
+				<form action="" method="get" class="mb-3 create_form">
+					<input type="number" name="personal_number" class="form-control" disabled value="{{ personal_number }}"
+								 placeholder="Введите табельный номер">
+				</form>
+				<h4>Информация о пользователе</h4>
+				<ul>
+					<li>
+						ФИО: {{ full_name }}
+					</li>
+					<li>
+						Должность: {{ position }}
+					</li>
+					<li>
+						Подразделение: {{ department }}
+					</li>
+				</ul>
+				<form action="" method="post" class="mb-3 create_form">
+					{% csrf_token %}
+					<input style="display: none;" type="number" name="db_id" class="form-control" value="{{ db_id }}" readonly>
+					{% if messages %}
+						<ul class="messages">
+							{% for message in messages %}
+								<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+							{% endfor %}
+						</ul>
+					{% endif %}
+					<input type="text" name="login" class="form-control login_input" placeholder="Введите логин" required>
+					<label class="form-check-label">Секретарь
+						<input class="form-check-input" type="checkbox" name="secretary" id="secretary">
+					</label>
+
+					<button type="submit" class="btn-reset btn-search">Создать</button>
+				</form>
+			{% endif %}
+		{% else %}
+			Пользователь успешно создан!
+			<a href="{% url 'create_user:create-user' %}" class="btn-reset btn-search link-reset">Назад</a>
+		{% endif %}
+	</div>
+{% endblock %}
