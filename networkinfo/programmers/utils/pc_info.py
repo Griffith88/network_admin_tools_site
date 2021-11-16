@@ -198,17 +198,17 @@ class KasperComputer(Computer):
                 attributes=['operatingSystem', 'operatingSystemVersion', ])
             if not conn.entries:
                 return {}
-            data = conn.entries[0]
-            result = {'os': data.operatingSystem,
-                      'os_build': data.operatingSystemVersion}
-            if data.operatingSystem == 'Windows 10 Корпоративная':
-                with open(file=os.path.join(BASE_DIR, 'win10_versions.json')) as file:
-                    data = json.load(file)
-                    try:
-                        os_version = data[str(result['os_build'])]
-                        result.update({'os_version': os_version})
-                    except KeyError:
-                        pass
-            elif data.operatingSystem == 'Windows 10 Корпоративная 2016 с долгосрочным обслуживанием':
-                result.update({'os_version': 'LTSB 2016'})
-            return result
+        data = conn.entries[0]
+        result = {'os': data.operatingSystem,
+                  'os_build': data.operatingSystemVersion}
+        if data.operatingSystem == 'Windows 10 Корпоративная':
+            with open(file=os.path.join(BASE_DIR, 'win10_versions.json')) as file:
+                data = json.load(file)
+                try:
+                    os_version = data[str(result['os_build'])]
+                    result.update({'os_version': os_version})
+                except KeyError:
+                    pass
+        elif data.operatingSystem == 'Windows 10 Корпоративная 2016 с долгосрочным обслуживанием':
+            result.update({'os_version': 'LTSB 2016'})
+        return result
