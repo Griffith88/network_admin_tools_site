@@ -11,7 +11,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os.path
 from pathlib import Path
+import environ
 
+env = environ.Env()
+env.read_env('.env')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-van^z@v5-cg&!ik&_7wu(5&^c6^q)_0z-6a*@tyfhab6_78-u)'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
@@ -37,7 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app_users',
-    'programmers'
+    'programmers',
+    'create_user',
+    'main_page',
+    'psycopg2'
 ]
 
 MIDDLEWARE = [
@@ -74,16 +80,24 @@ WSGI_APPLICATION = 'networkinfo.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
+    # },
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': env('POSTGRES_DB'),
+        'USER': env('POSTGRES_USER'),
+        'PASSWORD': env('POSTGRES_PASSWORD'),
+        'HOST': env('POSTGRES_HOST'),
+        'PORT': env('POSTGRES_PORT')
     },
     "kav": {
         "ENGINE": "mssql",
-        "NAME": "KAV",
-        "USER": "",
-        "PASSWORD": "",
-        "HOST": "",
+        "NAME": env('SQL_DB'),
+        "USER": env('SQL_USER'),
+        "PASSWORD": env('SQL_PASSWORD'),
+        "HOST": env('SQL_HOST'),
         "PORT": "",
         "OPTIONS": {"driver": "ODBC Driver 17 for SQL Server"
                     },
@@ -133,16 +147,44 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = '/programmers/'
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/users/login/'
 
 # LDAP CONNECTIONS SETTINGS
 
-LDAP_USERNAME = ''
-LDAP_PASSWORD = ''
-LDAP_SERVER = ''
+LDAP_USERNAME = env('LDAP_USERNAME')
+LDAP_PASSWORD = env('LDAP_PASSWORD')
+LDAP_SERVER = env('LDAP_SERVER')
+
+# SKUD MYSQL CONFIGURATION
+
+skud_config = {
+    'host': env('SKUD_HOST'),
+    'port': env('SKUD_PORT'),
+    'database': env('SKUD_DATABASE'),
+    'user': env('SKUD_USER'),
+    'password': env('SKUD_PASSWORD'),
+    'charset': 'utf8',
+    'use_unicode': True,
+    'get_warnings': True,
+}
+
+# SPSQL READ
+
+SPSQL_SERVER = env('SPSQL_SERVER')
+SPSQL_DATABASE = env('SPSQL_DATABASE')
+SPSQL_UID = env('SPSQL_UID')
+SPSQL_PASSWORD = env('SPSQL_PASSWORD')
+
+# ADMIN LDAP
+
+AD_SERVER = env('ad_server')
+AD_USER = env('ad_user')
+AD_PASSWORD = env('ad_password')

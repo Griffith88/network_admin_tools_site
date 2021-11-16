@@ -3,3 +3,5 @@
 /static_root/
 /nginx/
 /probe.py
+/.env
+/db.sqlite3
