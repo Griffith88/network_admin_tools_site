@@ -1,10 +1,11 @@
+import os.path
 import re
 from abc import ABC
-
+import json
 from ldap3 import Connection, NTLM
 from django.db import connections
 from networkinfo import settings
-from networkinfo.settings import LDAP_SERVER
+from networkinfo.settings import LDAP_SERVER, BASE_DIR
 from programmers.utils.convert_ip import IpAddress
 
 LOGIN_PATTERN = re.compile(r'^Login:\s{1}(\w+.\w+|\w+)$')
@@ -24,14 +25,12 @@ class Computer(ABC):
 
 
 class LdapComputer(Computer):
-    def __init__(self, name: str):
-        super().__init__(name)
-        self.conn = Connection(server=LDAP_SERVER,
-                               user=settings.LDAP_USERNAME,
-                               password=settings.LDAP_PASSWORD,
-                               auto_bind=True,
-                               return_empty_attributes=True,
-                               authentication=NTLM)
+    conn = Connection(server=LDAP_SERVER,
+                      user=f'av\\{settings.LDAP_USERNAME}',
+                      password=settings.LDAP_PASSWORD,
+                      auto_bind=True,
+                      return_empty_attributes=True,
+                      authentication=NTLM)
 
     def get_info(self):
         with self.conn as conn:
@@ -88,6 +87,7 @@ class KasperComputer(Computer):
             host_id, cn, login, comp_name, ip_raw, department = data
             ip = IpAddress(str(ip_raw))
             ip = ip.convert()
+            os_info = self.get_os_info()
             motherboard = self.get_motherboard_info(cursor, host_id)
             ram_list, ram_full_capacity = {'ram_list': self.get_ram_info(cursor, host_id)[0]}, \
                                           {'ram_full_capacity': self.get_ram_info(cursor, host_id)[1]}
@@ -105,7 +105,8 @@ class KasperComputer(Computer):
                     **cpu,
                     **hd_list,
                     **video_list,
-                    **network_list}
+                    **network_list,
+                    **os_info}
 
     def get_motherboard_info(self, cursor, host_id):
         cursor.execute(
@@ -173,6 +174,8 @@ class KasperComputer(Computer):
         data = cursor.fetchall()
         for elem in data:
             video, video_driver = elem
+            if video.startswith('DameWare'):
+                continue
             video_list.append({'video': video, 'video_driver': video_driver})
         return video_list
 
@@ -187,3 +190,27 @@ class KasperComputer(Computer):
             network, network_mac, network_speed = elem
             network_list.append({'network': network, 'network_mac': network_mac, 'network_speed': network_speed})
         return network_list
+
+    def get_os_info(self):
+        conn = LdapComputer.conn
+        with conn:
+            conn.search(
+                search_base="ou=Corp_Computers,dc=ashipyards,dc=com",
+                search_filter=f'(&(objectClass=computer)(name={self.name}))',
+                attributes=['operatingSystem', 'operatingSystemVersion', ])
+            if not conn.entries:
+                return {}
+            data = conn.entries[0]
+            result = {'os': data.operatingSystem,
+                      'os_build': data.operatingSystemVersion}
+            if data.operatingSystem == 'Windows 10 Корпоративная':
+                with open(file=os.path.join(BASE_DIR, 'win10_versions.json')) as file:
+                    data = json.load(file)
+                    try:
+                        os_version = data[str(result['os_build'])]
+                        result.update({'os_version': os_version})
+                    except KeyError:
+                        pass
+            elif data.operatingSystem == 'Windows 10 Корпоративная 2016 с долгосрочным обслуживанием':
+                result.update({'os_version': 'LTSB 2016'})
+            return result

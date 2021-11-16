@@ -14,9 +14,12 @@
 				<div class="answer">
 					<ul class="answer-list">
 						<li class="answer-item">Логин пользователя: {{ login }}</li>
-						<li class="answer-item">IP: {{ ip }}</li>
 						<li class="answer-item">ФИО: {{ cn }}</li>
 						<li class="answer-item">Департамент: {{ department }}</li>
+						<li class="answer-item">Операционная система: {{ os }}</li>
+						<li class="answer-item">Сборка: {{ os_build }}</li>
+						{% if os_version %}<li class="answer-item">Версия: {{ os_version }}</li>{% endif %}
+						<li class="answer-item">IP: {{ ip }}</li>
 					</ul>
 				</div>
 				<h3>Техническая информация</h3>
