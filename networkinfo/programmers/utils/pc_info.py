@@ -2,7 +2,7 @@ import os.path
 import re
 from abc import ABC
 import json
-from ldap3 import Connection, NTLM
+from ldap3 import Connection
 from django.db import connections
 from networkinfo import settings
 from networkinfo.settings import LDAP_SERVER, BASE_DIR
@@ -26,11 +26,9 @@ class Computer(ABC):
 
 class LdapComputer(Computer):
     conn = Connection(server=LDAP_SERVER,
-                      user=f'av\\{settings.LDAP_USERNAME}',
+                      user=f'{settings.LDAP_USERNAME}',
                       password=settings.LDAP_PASSWORD,
-                      auto_bind=True,
-                      return_empty_attributes=True,
-                      authentication=NTLM)
+                      return_empty_attributes=True,)
 
     def get_info(self):
         with self.conn as conn:
