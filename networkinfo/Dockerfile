@@ -2,6 +2,7 @@ FROM python:3.9-buster
 # set work directory
 WORKDIR /usr/src/adminsite/
 
+COPY ./openssl.cnf /etc/ssl/openssl.cnf
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
