@@ -10,6 +10,7 @@ from programmers.utils.convert_ip import IpAddress
 
 LOGIN_PATTERN = re.compile(r'^Login:\s{1}(\w+.\w+|\w+)$')
 IP_PATTERN = re.compile(r'^\s{1}IP:\s{2}(\d+.\d+.\d+.\d+)')
+DAMEWARE_PATTERN = re.compile(r'[Dd]ame[Ww]are')
 
 
 class Computer(ABC):
@@ -115,15 +116,17 @@ class KasperComputer(Computer):
             f"dbo.v_akpub_hwinv.wstrName, "
             f"dbo.v_akpub_hwinv.wstrManufacturer, "
             f"dbo.v_akpub_hwinv.strBiosManuf, "
-            f"dbo.v_akpub_hwinv.strBiosVersion "
+            f"dbo.v_akpub_hwinv.strBiosVersion, "
+            f"dbo.v_akpub_hwinv.wstrSerialNum "
             f"FROM KAV.dbo.v_akpub_hwinv WHERE dbo.v_akpub_hwinv.nType = 0 and dbo.v_akpub_hwinv.nHost = {host_id};"
         )
         data = cursor.fetchone()
-        name, manufacturer, bios_manufacturer, bios_version = data
+        name, manufacturer, bios_manufacturer, bios_version, motherboard_serial = data
         motherboard = {'motherboard_name': name,
                        'manufacturer': manufacturer,
                        'bios_manufacturer': bios_manufacturer,
                        'bios_version': bios_version,
+                       'motherboard_serial': motherboard_serial,
                        }
         return motherboard
 
@@ -156,14 +159,14 @@ class KasperComputer(Computer):
 
     def get_hd_info(self, cursor, host_id):
         hd_list = []
-        cursor.execute(f"SELECT wstrName, nCapacity "
+        cursor.execute(f"SELECT wstrName, nCapacity, wstrSerialNum "
                        f"FROM dbo.v_akpub_hwinv vah "
                        f"WHERE nType = 3 and nHost = {host_id}")
 
         data = cursor.fetchall()
         for elem in data:
-            hd, hd_capacity = elem
-            hd_list.append({'hd': hd, 'hd_capacity': hd_capacity // 1000})
+            hd, hd_capacity, hd_serial = elem
+            hd_list.append({'hd': hd, 'hd_capacity': hd_capacity // 1000, 'hd_serial': hd_serial}, )
         return hd_list
 
     def get_video_info(self, cursor, host_id):
@@ -175,7 +178,7 @@ class KasperComputer(Computer):
         data = cursor.fetchall()
         for elem in data:
             video, video_driver = elem
-            if video.startswith('DameWare'):
+            if re.findall(DAMEWARE_PATTERN, video):
                 continue
             video_list.append({'video': video, 'video_driver': video_driver})
         return video_list

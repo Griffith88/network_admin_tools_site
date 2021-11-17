@@ -1,19 +1,24 @@
 from django.shortcuts import render
-
-# Create your views here.
 from django.views import View
-
 from programmers.utils.pc_info import KasperComputer
+from programmers.utils.user_info import KasperUser
 
 
 class SearchPcView(View):
     def get(self, request):
         template_name = 'programmers/search_page.html'
-        pc_name = request.GET.get('pc_name')
-        if pc_name:
-            pc = KasperComputer(pc_name)
+        value = request.GET.get('value')
+        search_type = request.GET.get('search_type')
+        if search_type == 'ПК' and value:
+            pc = KasperComputer(value)
             context = {**pc.info,
-                       'pc_name': pc_name,
-                       'search': True}
+                       'pc_name': value,
+                       'search': 'pc'}
+            return render(request, template_name, context)
+        elif search_type == 'Пользователь' and value:
+            user = KasperUser(value)
+            context = {'pc_list': user.info,
+                       'user_login': value,
+                       'search': 'user'}
             return render(request, template_name, context)
         return render(request, template_name, {})

@@ -1,12 +1,16 @@
 {% extends 'programmers/base.html' %}
 {% block content %}
 	<div class="container search-pc__container">
-		<h1 class="h1">Поиск информации о ПК</h1>
+		<h1 class="h1">Поиск информации о</h1>
 		<form action="" method="get" class="form-search">
-			<input type="text" name="pc_name" class="form-control search-input" placeholder="Введите имя ПК">
+			<select class="form-select search_type" name="search_type" id="search_type">
+				<option value="ПК" selected>ПК</option>
+				<option value="Пользователь">Пользователь</option>
+			</select>
+			<input type="text" name="value" id="value" class="form-control search-input" placeholder="Введите имя ПК">
 			<button class="btn-reset btn-search" type="submit">Найти</button>
 		</form>
-		{% if search %}
+		{% if search == 'pc' %}
 			{% if login and ip and cn %}
 				<div class="description">
 					По запросу {{ pc_name }} найдено:
@@ -18,7 +22,8 @@
 						<li class="answer-item">Департамент: {{ department }}</li>
 						<li class="answer-item">Операционная система: {{ os }}</li>
 						<li class="answer-item">Сборка: {{ os_build }}</li>
-						{% if os_version %}<li class="answer-item">Версия: {{ os_version }}</li>{% endif %}
+						{% if os_version %}
+							<li class="answer-item">Версия: {{ os_version }}</li>{% endif %}
 						<li class="answer-item">IP: {{ ip }}</li>
 					</ul>
 				</div>
@@ -29,6 +34,7 @@
 					<li class="answer-item">Модель: {{ motherboard_name }}</li>
 					<li class="answer-item">Биос: {{ bios_manufacturer }}</li>
 					<li class="answer-item">Версия биос: {{ bios_version }}</li>
+					<li class="answer-item">Серийный номер: {{ motherboard_serial }}</li>
 				</ul>
 				<h5>Процессор</h5>
 				<ul class="answer-list">
@@ -51,6 +57,7 @@
 					<ul class="answer-list">
 						<li class="answer-item">Наименование: {{ disk.hd }}</li>
 						<li class="answer-item">Объем: {{ disk.hd_capacity }}</li>
+						<li class="answer-item">Серийный номер: {{ disk.hd_serial }}</li>
 					</ul>
 				{% endfor %}
 				<h5>Видеокарты</h5>
@@ -71,6 +78,25 @@
 			{% else %}
 				<div class="description">
 					По запросу {{ pc_name }} ничего не найдено. Возможно компьютер неактивный или нету информации в базе.
+				</div>
+			{% endif %}
+		{% elif search == 'user' %}
+			{% if pc_list %}
+				<div class="description">
+					По запросу {{ user_login }} найдено:
+				</div>
+				<div class="answer">
+					{% for pc in pc_list %}
+						<ul class="answer-list">
+							<li class="answer-item">Имя компьютера: {{ pc.pc_name }}</li>
+							<li class="answer-item">IP компьютера: {{ pc.ip }}</li>
+							<li class="answer-item">ФИО пользователя: {{ pc.user_full_name }}</li>
+						</ul>
+					{% endfor %}
+				</div>
+			{% else %}
+				<div class="description">
+					По запросу {{ user_login }} ничего не найдено. Возможно пользователь неактивный или нету информации в базе.
 				</div>
 			{% endif %}
 		{% endif %}
