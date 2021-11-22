@@ -25,10 +25,7 @@ class CreateUserView(PermissionRequiredMixin, LoginRequiredMixin, View):
             if server.is_user_exists_by_pn():
                 messages.error(request, message='Такой табельный номер уже есть в Active Directory')
                 return render(request, template_name, {})
-            try:
-                UserCreateModel.objects.get(db_id=user.info['db_id'])
-            except UserCreateModel.DoesNotExist:
-                UserCreateModel.objects.create(**user.info)
+            UserCreateModel.objects.get_or_create(db_id=user.info['db_id'], defaults=user.info)
             return render(request, template_name, context)
         else:
             return render(request, template_name, {})
