@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'programmers',
     'create_user',
     'main_page',
+    'telephone_billing',
     'psycopg2'
 ]
 
@@ -111,7 +112,23 @@ DATABASES = {
         "PORT": "",
         "OPTIONS": {"driver": "ODBC Driver 17 for SQL Server"
                     },
-    }
+    },
+    'freeswitchdb': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': env('FREESWITCH_DB'),
+        'USER': env('FREESWITCH_USER'),
+        'PASSWORD': env('FREESWITCH_PASSWORD'),
+        'HOST': env('FREESWITCH_HOST'),
+        'PORT': env('FREESWITCH_PORT')
+    },
+    'statisticdb': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': env('STATISTIC_DB'),
+        'USER': env('STATISTIC_USER'),
+        'PASSWORD': env('STATISTIC_PASSWORD'),
+        'HOST': env('STATISTIC_HOST'),
+        'PORT': env('STATISTIC_PORT')
+    },
 }
 
 # Password validation
@@ -185,7 +202,6 @@ skud_config = {
     'use_unicode': True,
     'get_warnings': True,
 }
-
 
 # ADMIN LDAP
 

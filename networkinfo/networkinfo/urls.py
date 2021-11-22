@@ -21,5 +21,6 @@ urlpatterns = [
     path('', include(('main_page.urls', 'main_page'), namespace='main_page')),
     path('users/', include(('app_users.urls', 'app_users'), namespace='app_users')),
     path('programmers/', include(('programmers.urls', 'programmers'), namespace='programmers')),
-    path('create/', include(('create_user.urls', 'create_user'), namespace='create_user'))
+    path('create/', include(('create_user.urls', 'create_user'), namespace='create_user')),
+    path('billing/', include(('telephone_billing.urls', 'telephone_billing'), namespace='telephone_billing'))
 ]

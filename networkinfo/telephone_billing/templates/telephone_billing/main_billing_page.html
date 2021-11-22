@@ -1,0 +1,40 @@
+{% extends 'programmers/base.html' %}
+{% block content %}
+	<div class="container">
+		<form action="">
+			<label>Дата начала:
+				<input type="date" id="startDate" name="start_date">
+			</label>
+			<label>Дата конца:
+				<input type="date" id="endDate" name="end_date">
+			</label>
+			<button type="submit">Фильтровать</button>
+		</form>
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col">Описание</th>
+					<th scope="col">Город(сек)</th>
+					<th scope="col">Межгород/Международный(сек)</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for department, bill_sec in line_dict.items %}
+					<form action="" method="get">
+						<input type="text" name="department" value="{{ department }}" hidden>
+						<tr>
+							<th scope="row">{{ forloop.counter }}</th>
+							<td>
+								<button class="btn-reset link-primary" type="submit">{{ department }}</button>
+							</td>
+							{% for bill in bill_sec %}
+								<td>{{ bill }}</td>
+							{% endfor %}
+						</tr>
+					</form>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+{% endblock %}
