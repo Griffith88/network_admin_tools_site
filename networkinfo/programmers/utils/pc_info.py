@@ -26,6 +26,9 @@ class Computer(ABC):
 
 
 class LdapComputer(Computer):
+    """
+    Class of computer. Information is obtained from Active Directory
+    """
 
     def __init__(self, name):
         super().__init__(name)
@@ -67,6 +70,10 @@ class LdapComputer(Computer):
 
 
 class KasperComputer(Computer):
+    """
+      Class of computer. Information is obtained from Kaspersky Database
+    """
+
     def get_info(self) -> dict:
         with connections['kav'].cursor() as cursor:
             cursor.execute(

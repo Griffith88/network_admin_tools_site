@@ -3,6 +3,11 @@ import struct
 
 
 class IpAddress:
+    """
+    Class for converting ip from binary to normal view
+    :return normal ip
+    """
+
     def __init__(self, input: str):
         self.address_long = int(input, 10)
 

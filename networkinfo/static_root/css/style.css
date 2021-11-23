@@ -33,12 +33,21 @@
 }
 
 .form-search {
-    max-width: 400px;
+    display: flex;
+    max-width: 600px;
     margin-bottom: 10px;
+    align-items: center;
+}
+
+.search_type {
+    width: 40%;
+    margin-right: 4px;
 }
 
 .search-input {
-    margin-bottom: 10px;
+    width: 60%;
+    height: auto;
+    margin-right: 20px;
 }
 
 .search-pc__container {
@@ -120,4 +129,12 @@
 
 .card-heading {
     padding: 0;
+}
+
+.department-statistic {
+    padding-top: 30px;
+}
+
+.department-statistic__filter {
+    margin-bottom: 15px;
 }

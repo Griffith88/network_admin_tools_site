@@ -6,6 +6,9 @@ from create_user.utils.add_mail_to_mailrelay import add_mail_to_relay
 
 
 class LdapUser:
+    """
+    class for creating User. 2 methods for init from_sql database or from SPSQL server
+    """
 
     def __init__(self, personal_number: int, info: dict):
         self.personal_number = personal_number
@@ -36,6 +39,9 @@ class LdapUser:
 
 
 class LdapServer:
+    """
+    class for operations in Active Directory
+    """
     server = Server(AD_SERVER, use_ssl=True)
     company = "ОАО 'Адмиралтейские Верфи'"
     all_in_company_dn = "CN=ВСЕ-В-КОМПАНИИ,OU=ОАО 'Адмиралтейские Верфи',DC=ashipyards,DC=com"
@@ -71,7 +77,7 @@ class LdapServer:
                 attributes=['description', ])
             return True if self.conn.entries else False
 
-    def is_user_exists_by_login(self, login):
+    def is_user_exists_by_login(self, login: str):
         with self.conn:
             self.conn.search(
                 search_base="dc=ashipyards,dc=com",
