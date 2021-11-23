@@ -1,22 +1,22 @@
 {% extends 'programmers/base.html' %}
 {% block content %}
-	<div class="container">
-		<form action="">
+	<div class="container department-statistic">
+		<form action="" class="department-statistic__filter">
 			<label>Дата начала:
-				<input type="date" id="startDate" name="start_date">
+				<input type="date" id="startDate" name="start_date" class="form-control" value="{{ start_date }}">
 			</label>
 			<label>Дата конца:
-				<input type="date" id="endDate" name="end_date">
+				<input type="date" id="endDate" name="end_date" class="form-control" value="{{ end_date }}">
 			</label>
-			<button type="submit">Фильтровать</button>
+			<button type="submit" class="btn-reset btn-search">Фильтровать</button>
 		</form>
 		<table class="table table-hover">
 			<thead>
 				<tr>
 					<th scope="col">#</th>
 					<th scope="col">Описание</th>
-					<th scope="col">Город(сек)</th>
-					<th scope="col">Межгород/Международный(сек)</th>
+					<th scope="col">Город(время)</th>
+					<th scope="col">Межгород/Международный(время)</th>
 				</tr>
 			</thead>
 			<tbody>

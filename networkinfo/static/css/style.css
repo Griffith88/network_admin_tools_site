@@ -43,6 +43,7 @@
     width: 40%;
     margin-right: 4px;
 }
+
 .search-input {
     width: 60%;
     height: auto;
@@ -128,4 +129,12 @@
 
 .card-heading {
     padding: 0;
+}
+
+.department-statistic {
+    padding-top: 30px;
+}
+
+.department-statistic__filter {
+    margin-bottom: 15px;
 }

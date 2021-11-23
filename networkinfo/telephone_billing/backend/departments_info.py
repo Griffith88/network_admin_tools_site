@@ -5,9 +5,9 @@ from django.db import connections
 class Line(ABC):
 
     def __init__(self, line: tuple):
-        self.line = line[0]
-        self.bill_sec_city = line[1]
-        self.bill_sec_intercity = line[3]
+        self.line = line[0] if line[0] else line[2]
+        self.bill_sec_city = line[1] if line[1] else 0
+        self.bill_sec_intercity = line[3] if line[3] else 0
 
     def __str__(self):
         return self.line
