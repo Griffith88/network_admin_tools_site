@@ -1,8 +1,8 @@
-from ldap3 import Server, Connection as LDAP, MODIFY_REPLACE
-from django.db import connections
+from ldap3 import Server, Connection as Ldap, MODIFY_REPLACE
 from networkinfo.settings import AD_SERVER, AD_PASSWORD, AD_USER
 from create_user.utils.add_card_number import add_card_number
 from create_user.utils.add_mail_to_mailrelay import add_mail_to_relay
+from utils.decorators import db_connections
 
 
 class LdapUser:
@@ -15,32 +15,32 @@ class LdapUser:
         self.info = info
 
     @classmethod
-    def from_sql(cls, personal_number: int):
-        with connections['spsql'].cursor() as cursor:
-            cursor.execute(
-                f'SELECT [DEPARTMENT],[FNAME],[NAME1],[NAME2],[FULL_NAME],[ISN_P] '
-                f'FROM [MDS].[dbo].[V_Employers_AD] '
-                f'WHERE [TABN] = {personal_number}')
-            user = cursor.fetchone()
-            return cls(personal_number=personal_number, info={
-                'department_id': str(user[0]),
-                'second_name': user[1],
-                'first_name': user[2],
-                'middle_name': user[3],
-                'position': user[4],
-                'db_id': int(user[5]),
-                'full_name': f"{user[1]} {user[2]} {user[3]}",
-                'personal_number': personal_number,
-            })
+    @db_connections(connection_name='spsql')
+    def from_sql(cls, personal_number: int, cursor) -> object:
+        cursor.execute(
+            f'SELECT [DEPARTMENT],[FNAME],[NAME1],[NAME2],[FULL_NAME],[ISN_P] '
+            f'FROM [MDS].[dbo].[V_Employers_AD] '
+            f'WHERE [TABN] = {personal_number}')
+        user = cursor.fetchone()
+        return cls(personal_number=personal_number, info={
+            'department_id': str(user[0]),
+            'second_name': user[1],
+            'first_name': user[2],
+            'middle_name': user[3],
+            'position': user[4],
+            'db_id': int(user[5]),
+            'full_name': f"{user[1]} {user[2]} {user[3]}",
+            'personal_number': personal_number,
+        })
 
     @classmethod
-    def from_dict(cls, user_dict: dict):
+    def from_dict(cls, user_dict: dict) -> object:
         return cls(personal_number=user_dict['personal_number'], info=user_dict)
 
 
 class LdapServer:
     """
-    class for operations in Active Directory
+    class for operations in Active Directory with user:LdapUser
     """
     server = Server(AD_SERVER, use_ssl=True)
     company = "ОАО 'Адмиралтейские Верфи'"
@@ -51,7 +51,7 @@ class LdapServer:
         self.user = user
         self.is_secretary = is_secretary
         self.data = {}
-        self.conn = LDAP(server=self.server,
+        self.conn = Ldap(server=self.server,
                          user=AD_USER,
                          password=AD_PASSWORD,
                          auto_bind=True,

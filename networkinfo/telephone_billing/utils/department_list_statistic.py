@@ -1,7 +1,5 @@
-import datetime
 from abc import ABC, abstractmethod
-
-from django.db import connections
+from utils.decorators import db_connections
 
 
 class FilterMethod(ABC):
@@ -35,27 +33,27 @@ class DepartmentListNumbers:
 
 class BothDatesFilterMethod(FilterMethod):
 
-    def request_department_list(self):
+    @db_connections('statisticdb')
+    def request_department_list(self, cursor):
         number_list = []
-        with connections['statisticdb'].cursor() as cursor:
-            cursor.execute(f"select * "
-                           f"from "
-                           f"(select caller_id_number, sum(billsec) as sum_mezhgorod "
-                           f"from cdr "
-                           f"where LENGTH (caller_id_number) = 7 and char_length(destination_number) >= 11 "
-                           f"and hangup_cause = 'NORMAL_CLEARING' and start_stamp >= '{self.start_date}' "
-                           f"and start_stamp <= '{self.end_date}' "
-                           f"group by caller_id_number) t1 "
-                           f"full join "
-                           f"(select caller_id_number, sum(billsec) as sum_gorod "
-                           f"from cdr "
-                           f"where LENGTH (caller_id_number) = 7 and char_length(destination_number) >= 7 "
-                           f"and char_length(destination_number) <= 8 "
-                           f"and hangup_cause = 'NORMAL_CLEARING' and start_stamp >= '{self.start_date}' "
-                           f"and start_stamp <= '{self.end_date}' "
-                           f"group by caller_id_number) t2 "
-                           f"on t1.caller_id_number = t2.caller_id_number; ")
-            data = cursor.fetchall()
+        cursor.execute(f"select * "
+                       f"from "
+                       f"(select caller_id_number, sum(billsec) as sum_mezhgorod "
+                       f"from cdr "
+                       f"where LENGTH (caller_id_number) = 7 and char_length(destination_number) >= 11 "
+                       f"and hangup_cause = 'NORMAL_CLEARING' and start_stamp >= '{self.start_date}' "
+                       f"and start_stamp <= '{self.end_date}' "
+                       f"group by caller_id_number) t1 "
+                       f"full join "
+                       f"(select caller_id_number, sum(billsec) as sum_gorod "
+                       f"from cdr "
+                       f"where LENGTH (caller_id_number) = 7 and char_length(destination_number) >= 7 "
+                       f"and char_length(destination_number) <= 8 "
+                       f"and hangup_cause = 'NORMAL_CLEARING' and start_stamp >= '{self.start_date}' "
+                       f"and start_stamp <= '{self.end_date}' "
+                       f"group by caller_id_number) t2 "
+                       f"on t1.caller_id_number = t2.caller_id_number; ")
+        data = cursor.fetchall()
         for number in data:
             number_list.append(number)
         return number_list
@@ -63,25 +61,25 @@ class BothDatesFilterMethod(FilterMethod):
 
 class StartDateFilterMethod(FilterMethod):
 
-    def request_department_list(self):
+    @db_connections('statisticdb')
+    def request_department_list(self, cursor):
         number_list = []
-        with connections['statisticdb'].cursor() as cursor:
-            cursor.execute(f"select * "
-                           f"from "
-                           f"(select caller_id_number, sum(billsec) as sum_mezhgorod "
-                           f"from cdr "
-                           f"where LENGTH (caller_id_number) = 7 and char_length(destination_number) >= 11 "
-                           f"and hangup_cause = 'NORMAL_CLEARING' and start_stamp >= '{self.start_date}' "
-                           f"group by caller_id_number) t1 "
-                           f"full join "
-                           f"(select caller_id_number, sum(billsec) as sum_gorod "
-                           f"from cdr "
-                           f"where LENGTH (caller_id_number) = 7 and char_length(destination_number) >= 7 "
-                           f"and char_length(destination_number) <= 8 "
-                           f"and hangup_cause = 'NORMAL_CLEARING' and start_stamp >= '{self.start_date}' "
-                           f"group by caller_id_number) t2 "
-                           f"on t1.caller_id_number = t2.caller_id_number; ")
-            data = cursor.fetchall()
+        cursor.execute(f"select * "
+                       f"from "
+                       f"(select caller_id_number, sum(billsec) as sum_mezhgorod "
+                       f"from cdr "
+                       f"where LENGTH (caller_id_number) = 7 and char_length(destination_number) >= 11 "
+                       f"and hangup_cause = 'NORMAL_CLEARING' and start_stamp >= '{self.start_date}' "
+                       f"group by caller_id_number) t1 "
+                       f"full join "
+                       f"(select caller_id_number, sum(billsec) as sum_gorod "
+                       f"from cdr "
+                       f"where LENGTH (caller_id_number) = 7 and char_length(destination_number) >= 7 "
+                       f"and char_length(destination_number) <= 8 "
+                       f"and hangup_cause = 'NORMAL_CLEARING' and start_stamp >= '{self.start_date}' "
+                       f"group by caller_id_number) t2 "
+                       f"on t1.caller_id_number = t2.caller_id_number; ")
+        data = cursor.fetchall()
         for number in data:
             number_list.append(number)
         return number_list
@@ -89,26 +87,25 @@ class StartDateFilterMethod(FilterMethod):
 
 class EndDateFilterMethod(FilterMethod):
 
-    def request_department_list(self):
+    @db_connections('statisticdb')
+    def request_department_list(self, cursor):
         number_list = []
-        with connections['statisticdb'].cursor() as cursor:
-            cursor.execute(f"select * "
-                           f"from "
-                           f"(select caller_id_number, sum(billsec) as sum_mezhgorod "
-                           f"from cdr "
-                           f"where LENGTH (caller_id_number) = 7 and char_length(destination_number) >= 11 "
-                           f"and hangup_cause = 'NORMAL_CLEARING' and start_stamp <= '{self.end_date}' "
-                           f"group by caller_id_number) t1 "
-                           f"full join "
-                           f"(select caller_id_number, sum(billsec) as sum_gorod "
-                           f"from cdr "
-                           f"where LENGTH (caller_id_number) = 7 and char_length(destination_number) >= 7 "
-                           f"and char_length(destination_number) <= 8 "
-                           f"and hangup_cause = 'NORMAL_CLEARING' and start_stamp <= '{self.end_date}' "
-                           f"group by caller_id_number) t2 "
-                           f"on t1.caller_id_number = t2.caller_id_number; ")
-            data = cursor.fetchall()
+        cursor.execute(f"select * "
+                       f"from "
+                       f"(select caller_id_number, sum(billsec) as sum_mezhgorod "
+                       f"from cdr "
+                       f"where LENGTH (caller_id_number) = 7 and char_length(destination_number) >= 11 "
+                       f"and hangup_cause = 'NORMAL_CLEARING' and start_stamp <= '{self.end_date}' "
+                       f"group by caller_id_number) t1 "
+                       f"full join "
+                       f"(select caller_id_number, sum(billsec) as sum_gorod "
+                       f"from cdr "
+                       f"where LENGTH (caller_id_number) = 7 and char_length(destination_number) >= 7 "
+                       f"and char_length(destination_number) <= 8 "
+                       f"and hangup_cause = 'NORMAL_CLEARING' and start_stamp <= '{self.end_date}' "
+                       f"group by caller_id_number) t2 "
+                       f"on t1.caller_id_number = t2.caller_id_number; ")
+        data = cursor.fetchall()
         for number in data:
             number_list.append(number)
         return number_list
-

@@ -13,7 +13,6 @@ class IpAddress:
 
     def convert(self):
         hex(self.address_long)
-        # struct.pack("<L", self.address_long)
         ip_address_raw = socket.inet_ntoa(struct.pack("<L", self.address_long))
         return self.reverse_ip(ip_address_raw)
 

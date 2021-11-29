@@ -1,8 +1,6 @@
 from abc import ABC
-
-from django.db import connections
-
 from programmers.utils.convert_ip import IpAddress
+from utils.decorators import db_connections
 
 
 class User(ABC):
@@ -17,19 +15,19 @@ class KasperUser(User):
     def info(self):
         return self.get_info()
 
-    def get_info(self):
+    @db_connections(connection_name='kav')
+    def get_info(self, cursor):
         info_list = []
-        with connections['kav'].cursor() as cursor:
-            cursor.execute(
-                f"SELECT dbo.v_akpub_host.wstrDisplayName, "
-                f"dbo.v_akpub_host.nIp, dbo.v_akpub_users_and_groups.wstrDisplayName "
-                f"FROM dbo.v_akpub_users_and_groups  "
-                f"JOIN dbo.v_akpub_hst_loggedin_users "
-                f"ON (dbo.v_akpub_users_and_groups.binId = dbo.v_akpub_hst_loggedin_users.binUserId) "
-                f"JOIN dbo.v_akpub_host "
-                f"ON (dbo.v_akpub_hst_loggedin_users.nHost = dbo.v_akpub_host.nId) "
-                f"WHERE dbo.v_akpub_users_and_groups.wstrSamAccountName = '{self.login}'")
-            data_list = cursor.fetchall()
+        cursor.execute(
+            f"SELECT dbo.v_akpub_host.wstrDisplayName, "
+            f"dbo.v_akpub_host.nIp, dbo.v_akpub_users_and_groups.wstrDisplayName "
+            f"FROM dbo.v_akpub_users_and_groups  "
+            f"JOIN dbo.v_akpub_hst_loggedin_users "
+            f"ON (dbo.v_akpub_users_and_groups.binId = dbo.v_akpub_hst_loggedin_users.binUserId) "
+            f"JOIN dbo.v_akpub_host "
+            f"ON (dbo.v_akpub_hst_loggedin_users.nHost = dbo.v_akpub_host.nId) "
+            f"WHERE dbo.v_akpub_users_and_groups.wstrSamAccountName = '{self.login}'")
+        data_list = cursor.fetchall()
         if not data_list:
             return {}
         for computer in data_list:

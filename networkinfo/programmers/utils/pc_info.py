@@ -3,10 +3,10 @@ import re
 from abc import ABC
 import json
 from ldap3 import Connection
-from django.db import connections
 from networkinfo import settings
 from networkinfo.settings import LDAP_SERVER, BASE_DIR
 from programmers.utils.convert_ip import IpAddress
+from utils.decorators import db_connections
 
 LOGIN_PATTERN = re.compile(r'^Login:\s{1}(\w+.\w+|\w+)$')
 IP_PATTERN = re.compile(r'^\s{1}IP:\s{2}(\d+.\d+.\d+.\d+)')
@@ -74,48 +74,48 @@ class KasperComputer(Computer):
       Class of computer. Information is obtained from Kaspersky Database
     """
 
-    def get_info(self) -> dict:
-        with connections['kav'].cursor() as cursor:
-            cursor.execute(
-                f"SELECT "
-                f"dbo.v_akpub_host.nId, "
-                f"dbo.v_akpub_users_and_groups.wstrDisplayName, "
-                f"dbo.v_akpub_users_and_groups.wstrSamAccountName, "
-                f"dbo.v_akpub_host.wstrDisplayName, "
-                f"dbo.v_akpub_host.nIp, "
-                f"dbo.v_akpub_users_and_groups.wstrDepartment "
-                f"FROM dbo.v_akpub_users_and_groups "
-                f"JOIN dbo.v_akpub_hst_loggedin_users "
-                f"ON (dbo.v_akpub_hst_loggedin_users.binUserId = dbo.v_akpub_users_and_groups.binId) "
-                f"JOIN dbo.v_akpub_host "
-                f"ON (dbo.v_akpub_host.nId = dbo.v_akpub_hst_loggedin_users.nHost) "
-                f"WHERE dbo.v_akpub_host.wstrDisplayName = '{self.name}'")
-            data = cursor.fetchone()
-            if not data:
-                return {}
-            host_id, cn, login, comp_name, ip_raw, department = data
-            ip = IpAddress(str(ip_raw))
-            ip = ip.convert()
-            os_info = self.get_os_info()
-            motherboard = self.get_motherboard_info(cursor, host_id)
-            ram_list, ram_full_capacity = {'ram_list': self.get_ram_info(cursor, host_id)[0]}, \
-                                          {'ram_full_capacity': self.get_ram_info(cursor, host_id)[1]}
-            cpu = self.get_cpu_info(cursor, host_id)
-            hd_list = {'hd_list': self.get_hd_info(cursor, host_id)}
-            video_list = {'video_list': self.get_video_info(cursor, host_id)}
-            network_list = {'network_list': self.get_network_info(cursor, host_id)}
-            return {'login': login.lower(),
-                    'ip': ip,
-                    'cn': cn,
-                    'department': department,
-                    **motherboard,
-                    **ram_list,
-                    **ram_full_capacity,
-                    **cpu,
-                    **hd_list,
-                    **video_list,
-                    **network_list,
-                    **os_info}
+    @db_connections('kav')
+    def get_info(self, cursor) -> dict:
+        cursor.execute(
+            f"SELECT "
+            f"dbo.v_akpub_host.nId, "
+            f"dbo.v_akpub_users_and_groups.wstrDisplayName, "
+            f"dbo.v_akpub_users_and_groups.wstrSamAccountName, "
+            f"dbo.v_akpub_host.wstrDisplayName, "
+            f"dbo.v_akpub_host.nIp, "
+            f"dbo.v_akpub_users_and_groups.wstrDepartment "
+            f"FROM dbo.v_akpub_users_and_groups "
+            f"JOIN dbo.v_akpub_hst_loggedin_users "
+            f"ON (dbo.v_akpub_hst_loggedin_users.binUserId = dbo.v_akpub_users_and_groups.binId) "
+            f"JOIN dbo.v_akpub_host "
+            f"ON (dbo.v_akpub_host.nId = dbo.v_akpub_hst_loggedin_users.nHost) "
+            f"WHERE dbo.v_akpub_host.wstrDisplayName = '{self.name}'")
+        data = cursor.fetchone()
+        if not data:
+            return {}
+        host_id, cn, login, comp_name, ip_raw, department = data
+        ip = IpAddress(str(ip_raw))
+        ip = ip.convert()
+        os_info = self.get_os_info()
+        motherboard = self.get_motherboard_info(cursor, host_id)
+        ram_list, ram_full_capacity = {'ram_list': self.get_ram_info(cursor, host_id)[0]}, \
+                                      {'ram_full_capacity': self.get_ram_info(cursor, host_id)[1]}
+        cpu = self.get_cpu_info(cursor, host_id)
+        hd_list = {'hd_list': self.get_hd_info(cursor, host_id)}
+        video_list = {'video_list': self.get_video_info(cursor, host_id)}
+        network_list = {'network_list': self.get_network_info(cursor, host_id)}
+        return {'login': login.lower(),
+                'ip': ip,
+                'cn': cn,
+                'department': department,
+                **motherboard,
+                **ram_list,
+                **ram_full_capacity,
+                **cpu,
+                **hd_list,
+                **video_list,
+                **network_list,
+                **os_info}
 
     def get_motherboard_info(self, cursor, host_id):
         cursor.execute(

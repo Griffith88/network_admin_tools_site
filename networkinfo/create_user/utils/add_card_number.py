@@ -3,7 +3,7 @@ import mysql.connector
 from networkinfo.settings import skud_config
 
 
-def add_card_number(personal_number: str) -> None:
+def add_card_number(personal_number: str) -> str or None:
     """
     method for executing card_number from user's card from SCUD database for subsequent adding into ActiveDirectory attr
     :param personal_number:
