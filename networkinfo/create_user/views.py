@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.db import transaction
 from django.shortcuts import render
 from django.views import View
 from create_user.models import UserCreateModel
@@ -10,6 +11,7 @@ from django.forms.models import model_to_dict
 class CreateUserView(PermissionRequiredMixin, LoginRequiredMixin, View):
     permission_required = 'create_user.view_usercreatemodel'
 
+    @transaction.non_atomic_requests
     def get(self, request):
         template_name = 'create_user/create_user.html'
         if request.GET.get('personal_number'):
