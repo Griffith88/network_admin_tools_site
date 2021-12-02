@@ -11,7 +11,7 @@ from django.forms.models import model_to_dict
 class CreateUserView(PermissionRequiredMixin, LoginRequiredMixin, View):
     permission_required = 'create_user.view_usercreatemodel'
 
-    @transaction.non_atomic_requests
+    @transaction.atomic
     def get(self, request):
         template_name = 'create_user/create_user.html'
         if request.GET.get('personal_number'):
