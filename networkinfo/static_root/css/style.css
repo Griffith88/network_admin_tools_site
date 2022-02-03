@@ -55,6 +55,7 @@
 }
 
 .btn-search {
+    position: relative;
     background-color: #0072c6;
     font-weight: 600;
     padding: 5px 10px;
@@ -78,7 +79,7 @@
     border-radius: 10px;
     background-color: snow;
     font-weight: 600;
-    transition: background-color .3s ease-in-out;
+    transition: all .3s ease-in-out;
 }
 
 .header-btn:hover {
@@ -137,4 +138,65 @@
 
 .department-statistic__filter {
     margin-bottom: 15px;
+}
+
+
+.load {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: inherit
+}
+
+.load::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    width: 30px;
+    height: 30px;
+    border-left: 3px solid transparent;
+    border-bottom: 3px solid transparent;
+    animation: loading1 1s ease infinite;
+    z-index: 10
+}
+
+.load::before {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    border: 3px dashed #fff;
+    width: 30px;
+    height: 30px;
+    border-left: 3px solid transparent;
+    border-bottom: 3px solid transparent;
+    animation: loading1 2s linear infinite;
+    z-index: 5
+}
+
+@keyframes loading1 {
+    0% {
+        transform: rotate(0deg)
+    }
+
+    100% {
+        transform: rotate(360deg)
+    }
+}
+
+
+.btn-search.activeLoading .loading {
+    visibility: visible;
+    opacity: 1
+}
+
+.btn-search .loading {
+    opacity: 0;
+    visibility: hidden
 }
