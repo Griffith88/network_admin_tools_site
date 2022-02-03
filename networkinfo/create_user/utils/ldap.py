@@ -16,25 +16,26 @@ class LdapUser:
 
     @classmethod
     @db_connections(connection_name='spsql')
-    def from_sql(cls, personal_number: int, cursor) -> object:
+    def from_sql(cls, personal_number: int, cursor):
         cursor.execute(
             f'SELECT [DEPARTMENT],[FNAME],[NAME1],[NAME2],[FULL_NAME],[ISN_P] '
             f'FROM [MDS].[dbo].[V_Employers_AD] '
             f'WHERE [TABN] = {personal_number}')
         user = cursor.fetchone()
-        return cls(personal_number=personal_number, info={
-            'department_id': str(user[0]),
-            'second_name': user[1],
-            'first_name': user[2],
-            'middle_name': user[3],
-            'position': user[4],
-            'db_id': int(user[5]),
-            'full_name': f"{user[1]} {user[2]} {user[3]}",
-            'personal_number': personal_number,
-        })
-
+        if user:
+            return cls(personal_number=personal_number, info={
+                'department_id': str(user[0]),
+                'second_name': user[1],
+                'first_name': user[2],
+                'middle_name': user[3],
+                'position': user[4],
+                'db_id': int(user[5]),
+                'full_name': f"{user[1]} {user[2]} {user[3]}",
+                'personal_number': personal_number,
+            })
+        return
     @classmethod
-    def from_dict(cls, user_dict: dict) -> object:
+    def from_dict(cls, user_dict: dict):
         return cls(personal_number=user_dict['personal_number'], info=user_dict)
 
 

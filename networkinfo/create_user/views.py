@@ -16,6 +16,9 @@ class CreateUserView(PermissionRequiredMixin, LoginRequiredMixin, View):
         template_name = 'create_user/create_user.html'
         if request.GET.get('personal_number'):
             user = LdapUser.from_sql(int(request.GET.get('personal_number')))
+            if not user:
+                messages.error(request, message=f'Табельный номер {request.GET.get("personal_number")} не найден!')
+                return render(request, template_name, {})
             context = {
                 'full_name': user.info['full_name'],
                 'position': user.info['position'],
