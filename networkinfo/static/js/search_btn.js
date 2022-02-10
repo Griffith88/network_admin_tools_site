@@ -1,7 +1,10 @@
 const btns = document.getElementById('btn_search');
-btns.addEventListener('click', (evt) => {
+const create_form = document.getElementById('create_user_form')
+create_form.addEventListener('submit', (evt) => {
     const isValidForm = document.getElementById('tab_number').checkValidity();
     if (isValidForm) {
-        evt.target.classList.add('activeLoading');
+        document.forms['create_user_form'].submit()
+        btns.classList.add('activeLoading');
+        btns.disabled = true
     }
 })
