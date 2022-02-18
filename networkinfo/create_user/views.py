@@ -19,14 +19,16 @@ class CreateUserView(PermissionRequiredMixin, LoginRequiredMixin, View):
             if not user:
                 messages.error(request, message=f'Табельный номер {request.GET.get("personal_number")} не найден!')
                 return render(request, template_name, {})
+            server = LdapServer(user)
+            login = server.generate_login(user.info['full_name'])
             context = {
                 'full_name': user.info['full_name'],
                 'position': user.info['position'],
                 'department': user.info['department_id'],
                 'personal_number': request.GET.get('personal_number'),
-                'db_id': user.info['db_id']
+                'db_id': user.info['db_id'],
+                'login': login
             }
-            server = LdapServer(user)
             if server.is_user_exists_by_pn():
                 messages.error(request, message='Такой табельный номер уже есть в Active Directory')
                 return render(request, template_name, {})
@@ -47,7 +49,8 @@ class CreateUserView(PermissionRequiredMixin, LoginRequiredMixin, View):
                 'position': user.info['position'],
                 'department': user.info['department_id'],
                 'personal_number': request.GET.get('personal_number'),
-                'db_id': user.info['db_id']
+                'db_id': user.info['db_id'],
+                'login': login
             }
             return render(request, template_name, context)
         server.create_user(request.POST.get('login'))

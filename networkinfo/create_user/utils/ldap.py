@@ -1,5 +1,5 @@
 from ldap3 import Server, Connection as Ldap, MODIFY_REPLACE
-from networkinfo.settings import AD_SERVER, AD_PASSWORD, AD_USER
+from networkinfo.settings import AD_SERVER, AD_PASSWORD, AD_USER, TRANSLIT_DICT
 from create_user.utils.add_card_number import add_card_number
 from create_user.utils.add_mail_to_mailrelay import add_mail_to_relay
 from utils.decorators import db_connections
@@ -78,7 +78,7 @@ class LdapServer:
                 attributes=['description', ])
             return True if self.conn.entries else False
 
-    def is_user_exists_by_login(self, login: str):
+    def is_user_exists_by_login(self, login: str) -> bool:
         with self.conn:
             self.conn.search(
                 search_base="dc=ashipyards,dc=com",
@@ -136,3 +136,26 @@ class LdapServer:
                              attributes=['distinguishedName', ])
             group = self.conn.entries[0]
             return str(group.distinguishedName)
+
+    def translate(self, rustring: str) -> str:
+        res = ""
+        for symb in rustring:
+            res += TRANSLIT_DICT[symb]
+        return res
+
+    def generate_login(self, full_name: str) -> str:
+        full_name_eng_l = [self.translate(i) for i in full_name.split()]
+        englogin = full_name_eng_l[0] + "." + full_name_eng_l[1][0] + full_name_eng_l[2][0]
+        pncnt = 2
+        fncnt = 2
+        while True:
+            if not self.is_user_exists_by_login(englogin):
+                return englogin.lower()
+            if fncnt < len(full_name_eng_l[1]):
+                englogin = full_name_eng_l[0] + "." + full_name_eng_l[1][:fncnt] + full_name_eng_l[2][0]
+                fncnt += 1
+            elif pncnt < len(full_name_eng_l[2]):
+                englogin = full_name_eng_l[0] + "." + full_name_eng_l[1] + full_name_eng_l[2][:pncnt]
+                pncnt += 1
+            else:
+                return ""
