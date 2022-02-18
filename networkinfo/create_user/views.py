@@ -42,6 +42,7 @@ class CreateUserView(PermissionRequiredMixin, LoginRequiredMixin, View):
         user_model = UserCreateModel.objects.get(db_id=request.POST.get('db_id'))
         user = LdapUser.from_dict(model_to_dict(user_model))
         server = LdapServer(user, is_secretary=request.POST.get('secretary'))
+        login = server.generate_login(user.info['full_name'])
         if server.is_user_exists_by_login(request.POST.get('login')):
             messages.error(request, message='Пользователь с таким логином уже есть в базе данных Active Directory')
             context = {
