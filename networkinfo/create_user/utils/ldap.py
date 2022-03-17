@@ -1,8 +1,11 @@
+import datetime
+import time
+
+import cx_Oracle
 from ldap3 import Server, Connection as Ldap, MODIFY_REPLACE
-from networkinfo.settings import AD_SERVER, AD_PASSWORD, AD_USER, TRANSLIT_DICT
+from networkinfo.settings import AD_SERVER, AD_PASSWORD, AD_USER, TRANSLIT_DICT, ORACLE_USER, ORACLE_PASSWORD, DB_STRING
 from create_user.utils.add_card_number import add_card_number
 from create_user.utils.add_mail_to_mailrelay import add_mail_to_relay
-from utils.decorators import db_connections
 
 
 class LdapUser:
@@ -15,13 +18,15 @@ class LdapUser:
         self.info = info
 
     @classmethod
-    @db_connections(connection_name='spsql')
-    def from_sql(cls, personal_number: int, cursor):
-        cursor.execute(
-            f'SELECT [DEPARTMENT],[FNAME],[NAME1],[NAME2],[FULL_NAME],[ISN_P] '
-            f'FROM [MDS].[dbo].[V_Employers_AD] '
-            f'WHERE [TABN] = {personal_number}')
-        user = cursor.fetchone()
+    def from_sql(cls, personal_number: int):
+        with cx_Oracle.connect(user=ORACLE_USER, password=ORACLE_PASSWORD,
+                               dsn=DB_STRING,
+                               encoding="UTF-8") as connection:
+            cursor = connection.cursor()
+            cursor.execute(f"""
+            select DEPARTMENT,FNAME,NAME1,NAME2,FULL_NAME,ISN_P from sed.v_empl_for_ad where TABN = (:1)
+            """, (personal_number,))
+            user = next(cursor)
         if user:
             return cls(personal_number=personal_number, info={
                 'department_id': str(user[0]),
@@ -34,6 +39,7 @@ class LdapUser:
                 'personal_number': personal_number,
             })
         return
+
     @classmethod
     def from_dict(cls, user_dict: dict):
         return cls(personal_number=user_dict['personal_number'], info=user_dict)
@@ -73,7 +79,7 @@ class LdapServer:
     def is_user_exists_by_pn(self):
         with self.conn:
             self.conn.search(
-                search_base="dc=ashipyards,dc=com",
+                search_base="ou=ОАО 'Адмиралтейские Верфи',dc=ashipyards,dc=com",
                 search_filter=f'(&(objectClass=person)(description={self.user.personal_number}))',
                 attributes=['description', ])
             return True if self.conn.entries else False

@@ -2,6 +2,7 @@ asgiref==3.4.1
 bcrypt==3.2.0
 cffi==1.15.0
 cryptography==35.0.0
+cx-Oracle==8.3.0
 Django==3.2.9
 django-environ==0.8.1
 django-mssql-backend==2.8.1
@@ -19,6 +20,3 @@ pyodbc==4.0.32
 pytz==2021.3
 six==1.16.0
 sqlparse==0.4.2
-
-
-

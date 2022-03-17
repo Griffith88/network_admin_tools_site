@@ -81,18 +81,18 @@ WSGI_APPLICATION = 'networkinfo.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
-    },
     # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #     'NAME': env('POSTGRES_DB'),
-    #     'USER': env('POSTGRES_USER'),
-    #     'PASSWORD': env('POSTGRES_PASSWORD'),
-    #     'HOST': env('POSTGRES_HOST'),
-    #     'PORT': env('POSTGRES_PORT')
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
     # },
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': env('POSTGRES_DB'),
+        'USER': env('POSTGRES_USER'),
+        'PASSWORD': env('POSTGRES_PASSWORD'),
+        'HOST': env('POSTGRES_HOST'),
+        'PORT': env('POSTGRES_PORT')
+    },
     "kav": {
         "ENGINE": "mssql",
         "NAME": env('SQL_DB'),
@@ -130,6 +130,13 @@ DATABASES = {
         'PORT': env('STATISTIC_PORT')
     },
 }
+
+# ORACLE DB
+
+ORACLE_USER = env('ORACLE_USER')
+ORACLE_PASSWORD = env('ORACLE_PASSWORD')
+DB_STRING = env('DB_STRING')
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -209,11 +216,14 @@ AD_SERVER = env('ad_server')
 AD_USER = env('ad_user')
 AD_PASSWORD = env('ad_password')
 
-TRANSLIT_DICT = {' ':'_','а': 'a', 'б': 'b', 'в':'v', 'г':'g', 'д':'d', 'е':'e', 'ё':'e', 'ж':'zh', 'з':'z',
-                    'и':'i','й':'i', 'к':'k', 'л':'l', 'м':'m', 'н':'n', 'о':'o', 'п':'p', 'р':'r', 'с':'s',
-                    'т':'t','у':'u','ф':'f','х':'h','ц':'c','ч':'ch', 'ш':'sh', 'щ':'shch', 'ы':'y', 'ю':'iu',
-                    'я':'ya', 'А':'A', 'Б':'B', 'В':'V', 'Г':'G', 'Д':'D', 'Е':'E', 'Ё':'E', 'Ж':'Zh', 'З':'Z',
-                    'И':'I', 'Й':'I', 'К':'K', 'Л':'L', 'М':'M', 'Н':'N', 'О':'O', 'П':'P', 'Р':'R', 'С':'S',
-                    'Т':'T', 'У':'U', 'Ф':'F', 'Х':'H', 'Ц':'C', 'Ч':'Ch', 'Ш':'Sh', 'Щ':'Shch', 'Ы':'Y', 'Э':'E',
-                    'Ю':'Iu', 'Я':'Ya', 'ъ':'', 'Ъ':'', 'ь':'', 'Ь':'', '.':'','1':'1','2':'2','3':'3','4':'4',
-                    '5':'5','6':'6','7':'7','8':'8','9':'9','0':'0'}
+TRANSLIT_DICT = {' ': '_', 'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e', 'ж': 'zh', 'з': 'z',
+                 'и': 'i', 'й': 'i', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's',
+                 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'c', 'ч': 'ch', 'ш': 'sh', 'щ': 'shch', 'ы': 'y',
+                 'ю': 'iu',
+                 'я': 'ya', 'А': 'A', 'Б': 'B', 'В': 'V', 'Г': 'G', 'Д': 'D', 'Е': 'E', 'Ё': 'E', 'Ж': 'Zh', 'З': 'Z',
+                 'И': 'I', 'Й': 'I', 'К': 'K', 'Л': 'L', 'М': 'M', 'Н': 'N', 'О': 'O', 'П': 'P', 'Р': 'R', 'С': 'S',
+                 'Т': 'T', 'У': 'U', 'Ф': 'F', 'Х': 'H', 'Ц': 'C', 'Ч': 'Ch', 'Ш': 'Sh', 'Щ': 'Shch', 'Ы': 'Y',
+                 'Э': 'E',
+                 'Ю': 'Iu', 'Я': 'Ya', 'ъ': '', 'Ъ': '', 'ь': '', 'Ь': '', '.': '', '1': '1', '2': '2', '3': '3',
+                 '4': '4',
+                 '5': '5', '6': '6', '7': '7', '8': '8', '9': '9', '0': '0'}
