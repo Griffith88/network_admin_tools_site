@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+sh -c "echo /opt/oracle/instantclient > /etc/ld.so.conf.d/oracle-instantclient.conf"
+
+ldconfig
+
+export LD_LIBRARY_PATH=/opt/oracle/instantclient:$LD_LIBRARY_PATH
 
 python manage.py collectstatic --noinput
 

@@ -19,7 +19,7 @@ RUN pip install -r /usr/src/adminsite/requirements.txt
 
 COPY . /usr/src/adminsite/
 
-RUN export LD_LIBRARY_PATH=/opt/oracle/instantclient:$LD_LIBRARY_PATH
+
 
 RUN ["chmod", "+x", "/usr/src/adminsite/entrypoint.sh"]
 

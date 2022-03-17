@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   web:
-    image: vdobrokhotov/web-adminsite:v2.0
+    image: vdobrokhotov/web-adminsite:v2.2
     volumes:
       - .:/usr/src/adminsite
     entrypoint: ./entrypoint.sh
