@@ -10,7 +10,7 @@ def add_card_number(personal_number: str) -> str or None:
     """
     db = mysql.connector.Connect(**skud_config)
     result = ''
-    cursor = db.cursor()
+    cursor = db.cursor(buffered=True)
     cursor.execute(f"select name,codekey from personal where tabid={personal_number} and status='AVAILABLE';")
     array_of_bytes = cursor.fetchone()
     if not array_of_bytes:
